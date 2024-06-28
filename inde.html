@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CEK KODAM</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        /* Menyembunyikan scrollbar di body */
+      }
+
+      .container {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: scroll;
+        max-height: 90vh;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .container::-webkit-scrollbar {
+        display: none;
+      }
+
+      table {
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+        text-align: center;
+      }
+
+      th,
+      td {
+        padding: 8px;
+      }
+
+      .kodam-image {
+        height: 100px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <table id="historyTable" class="table table-striped">
+        <thead>
+          <tr>
+            <th class="col-4">Nama</th>
+            <th class="col-4">Kodam</th>
+            <th class="col-4">Foto</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <form id="kodamForm">
+        <div class="form-group">
+          <label for="nama">Masukkan Nama:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nama"
+            placeholder="Masukkan nama anda"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">CEK</button>
+      </form>
+      <div id="result" class="mt-4 text-center"></div>
+    </div>
+
+    <script>
+      const kodamList = [
+        {
+          name: "SINGO",
+          img: "singo.webp",
+        },
+        {
+          name: "MACAN",
+          img: "macan.jpeg",
+        },
+        {
+          name: "CICAK",
+          img: "cicak.webp",
+        },
+        {
+          name: "KUNTI BOGEL",
+          img: "kunti.jpeg",
+        },
+        {
+          name: "MACAN REMBAH",
+          img: "macan-rembah.jpeg",
+        },
+        {
+          name: "BOYO",
+          img: "boyo.png",
+        },
+        {
+          name: "NOGO",
+          img: "nogo.jpeg",
+        },
+        {
+          name: "GENDERUWO",
+          img: "genderuwo.jpeg",
+        },
+      ];
+
+      document
+        .getElementById("kodamForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const nama = document.getElementById("nama").value;
+          if (nama.trim() !== "") {
+            const randomKodam =
+              kodamList[Math.floor(Math.random() * kodamList.length)];
+            saveToLocalStorage(nama, randomKodam);
+            renderTable();
+          } else {
+            document.getElementById(
+              "result"
+            ).innerHTML = `<h4>Mohon masukkan nama terlebih dahulu.</h4>`;
+          }
+        });
+
+      function saveToLocalStorage(nama, kodam) {
+        const history = JSON.parse(localStorage.getItem("kodamHistory")) || [];
+        history.push({
+          nama,
+          kodam,
+        });
+        localStorage.setItem("kodamHistory", JSON.stringify(history));
+      }
+
+      function renderTable() {
+        const tableBody = document.querySelector("#historyTable tbody");
+        tableBody.innerHTML = "";
+        const history = JSON.parse(localStorage.getItem("kodamHistory")) || [];
+        history.forEach((entry) => {
+          const row = tableBody.insertRow();
+          const cellNama = row.insertCell(0);
+          const cellKodam = row.insertCell(1);
+          const cellImg = row.insertCell(2);
+          cellNama.textContent = entry.nama;
+          cellKodam.textContent = entry.kodam.name;
+          cellImg.innerHTML = `<img src="${entry.kodam.img}" alt="${entry.kodam.name}" class="kodam-image col-12" />`;
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", renderTable);
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
